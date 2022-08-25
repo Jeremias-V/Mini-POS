@@ -1,0 +1,10 @@
+# Directories
+__pycache__/
+bin/
+include/
+lib/
+
+# Files
+.env
+*.db
+pyvenv.cfg
