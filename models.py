@@ -1,4 +1,6 @@
-from app import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -10,7 +12,7 @@ class Users(db.Model):
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
-    weight = db.Column(db.String(20), unique=True, nullable=False)
+    weight = db.Column(db.String(20), nullable=False)
     price = db.Column(db.String(50), nullable=False)
 
 class User_Token(db.Model):

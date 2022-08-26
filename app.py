@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from functools import wraps
 from os import environ
+from models import db, Users, Product, User_Token
 import uuid
 import jwt
 import datetime
@@ -16,29 +16,11 @@ app.config["SECRET_KEY"] = environ.get("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////" + environ.get("DB_PATH")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
-db = SQLAlchemy(app)
-
-class Users(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    public_id = db.Column(db.Integer)
-    name = db.Column(db.String(50))
-    password = db.Column(db.String(50))
-    admin = db.Column(db.Boolean)
-
-class Product(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
-    weight = db.Column(db.String(20), unique=True, nullable=False)
-    price = db.Column(db.String(50), nullable=False)
-
-class User_Token(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
-    token = db.Column(db.String(200), unique=True, nullable=False)
+db.init_app(app)
 
 def token_required(f):
     @wraps(f)
-    def decorator(*args, **kwargs):
+    def decorated(*args, **kwargs):
 
         token = None
 
@@ -57,7 +39,7 @@ def token_required(f):
 
         return f(current_user, *args, **kwargs)
         
-    return decorator
+    return decorated
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -157,4 +139,4 @@ def delete_product(current_user, product_id):
     return jsonify({'message': 'Product deleted'})
 
 if  __name__ == '__main__':  
-    app.run(debug=True)
+    app.run()

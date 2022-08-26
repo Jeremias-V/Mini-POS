@@ -5,7 +5,7 @@ if [ ! -f "mini-pos.db" ]; then
     exit 1
 fi
 
-echo -n "Are you sure you want to reset you database? (y/n) "
+echo -n "Are you sure you want to reset your database? (y/n) "
 read ans
 
 if [ "$ans" != "y" ]; then
