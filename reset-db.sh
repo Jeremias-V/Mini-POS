@@ -21,7 +21,7 @@ sqlite3 mini-pos.db ".databases"
 
 source bin/activate
 
-python3 -c 'from app import db; db.create_all()'
+python3 -c 'from models import db; from app import app; db.init_app(app); db.create_all(app=app)'
 
 echo "New database created!"
 

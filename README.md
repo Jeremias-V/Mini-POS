@@ -1,7 +1,7 @@
 # Mini-POS
 A feature limited Point Of Sale (POS) web based system.
 
-## Setup Project
+## Setup project
 1. Create a python virtual environment using `virtualenv .` inside the project parent directory.
 2. Activate the venv using `source bin/activate`.
 3. Install the required packages using `pip install -r requirements.txt`.
