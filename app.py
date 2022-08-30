@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from functools import wraps
 from os import environ
-from models import db, Users, Product, User_Token
+from models import *
 import uuid
 import jwt
 import datetime
@@ -44,6 +44,11 @@ def token_required(f):
 
 @app.route('/register', methods=['GET', 'POST'])
 def signup_user():
+    """
+    Register a new user, if the username already existis in DB it fails,
+    if not it creates the new user and stores its password encrypted with
+    sha256.
+    """
 
     data = request.get_json()
 
@@ -54,7 +59,8 @@ def signup_user():
 
     hashed_password = generate_password_hash(data['password'], method='sha256')
 
-    new_user = Users(public_id=str(uuid.uuid4()), name=data['name'], password=hashed_password, admin=False)
+    adm = True if data['admin'] == "True" else False
+    new_user = Users(public_id=str(uuid.uuid4()), name=data['name'], password=hashed_password, admin=adm)
     db.session.add(new_user)
     db.session.commit()
 
@@ -63,6 +69,11 @@ def signup_user():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_user():
+    """
+    Sign in as a registered user, if the user doesn't exists or the
+    password doesn't match, fail, else create a JWT and return the token
+    to be used by other methods.
+    """
  
     auth = request.authorization
 
@@ -85,6 +96,7 @@ def login_user():
 
         db.session.commit()
 
+        # TODO: return the token from the User_Token table (last login token).
         return jsonify({'token' : token})
 
     return jsonify({'message': 'could not verify'}), 401
@@ -93,6 +105,14 @@ def login_user():
 @app.route('/product', methods=['POST', 'GET'])
 @token_required
 def create_product(current_user):
+    """
+    Create a new product if the product name is not alredy in
+    DB, also check if the user trying to create the product is
+    an admin, else fail.
+    """
+    
+    if not current_user.admin:
+        return jsonify({'message': 'admin required for this action'}), 401
     
     data = request.get_json()
     product = Product.query.filter_by(name=data['name']).first()
@@ -111,6 +131,9 @@ def create_product(current_user):
 @app.route('/products', methods=['GET'])
 @token_required
 def get_products(current_user):
+    """
+    Get a json with all the products in DB (product list).
+    """
 
     products = Product.query.filter_by().all()
 
@@ -118,6 +141,7 @@ def get_products(current_user):
     for product in products:
 
         product_data = {}
+        product_data['id'] = product.id
         product_data['name'] = product.name
         product_data['weight'] = product.weight
         product_data['price'] = product.price
@@ -125,9 +149,20 @@ def get_products(current_user):
 
     return jsonify({'list_of_products' : output})
 
+
 @app.route('/products/<product_id>', methods=['DELETE'])
 @token_required
 def delete_product(current_user, product_id):
+    """
+    Remove a product from the DB, if the product id is not 
+    found at the DB or the user is not an admin, fail, else 
+    remove the product from the DB (this is why its important
+    to store the product info for each invoice).
+    """
+
+    if not current_user.admin:
+        return jsonify({'message': 'admin required for this action'}), 401
+
     product = Product.query.filter_by(id=product_id).first()
 
     if product is None:
@@ -140,3 +175,115 @@ def delete_product(current_user, product_id):
 
 if  __name__ == '__main__':  
     app.run()
+
+
+@app.route('/add/<product_id>', methods=['POST', 'GET'])
+@token_required
+def add_to_invoice(current_user, product_id):
+    """
+    Add (or scan) a product by its id to an invoice,
+    the invoice will be a temporary one until its confirmed
+    by the confirm_purchase function. The product quantity
+    doesn't matter in this representation, just add as many 
+    repeated products as neeeded.
+    """
+
+    product = Product.query.filter_by(id=product_id).first()
+
+    if product is None:
+       return jsonify({'message': 'product does not exist'}), 404
+
+    curr_invoice = CurrentInvoice.query.filter_by(id=current_user.id).first()
+
+    if curr_invoice is None:
+        curr_invoice = CurrentInvoice(user_id=current_user.id)
+        db.session.add(curr_invoice)
+    
+    db.session.flush()
+    invoice_product = CurrentInvoice_Product(currentinvoice_id=curr_invoice.id,\
+                                            product_id=product.id)
+    db.session.add(invoice_product)
+    db.session.commit()
+
+    return jsonify({'message' : 'product added to your invoice'})
+
+
+@app.route('/invoice', methods=['GET'])
+@token_required
+def get_current_invoice(current_user):
+    """
+    Get all the products included in the current invoice (by the current_user).
+    """
+    currentInv = CurrentInvoice.query.filter_by(user_id=current_user.id).first()
+
+    if currentInv is None:
+        return jsonify({'message': 'no current invoice associated to {}'.format(current_user.name)}), 404
+
+    currentInvProducts = CurrentInvoice_Product.query.filter_by(currentinvoice_id=currentInv.id).all()
+
+    products = []
+    for inv in currentInvProducts:
+        product = Product.query.filter_by(id=inv.product_id).first()
+        product_data = {}
+        product_data['name'] = product.name
+        product_data['weight'] = product.weight
+        product_data['price'] = product.price
+        products.append(product_data)
+
+    return jsonify({'cashier' : current_user.name, 'list_of_products' : products})
+    
+
+@app.route('/confirm', methods=['GET'])
+@token_required
+def confirm_purchase(current_user):
+    """
+    Confirm a purchase with the current invoice associated
+    to the current user, the product info will be stored in
+    Invoice_Product as well as the quantity.
+    """
+
+    invoice = Invoice(user_id=current_user.id)
+    db.session.add(invoice)
+    currentInv = CurrentInvoice.query.filter_by(user_id=current_user.id).first()
+
+    if currentInv is None:
+        return jsonify({'message': 'no current invoice associated to {}'.format(current_user.name)}), 404
+    
+    currentInvProducts = CurrentInvoice_Product.query.filter_by(currentinvoice_id=currentInv.id).all()
+
+    db.session.delete(currentInv)
+
+    allProducts = {}
+    for inv in currentInvProducts:
+        product = Product.query.filter_by(id=inv.product_id).first()
+
+        if product.name not in allProducts:
+            allProducts[product.name] = \
+                {
+                "name": product.name,
+                "weight": product.weight,
+                "price": product.price,
+                "quantity": 1,
+                "invoice_id": invoice.id
+                }
+        else:
+            allProducts[product.name]["quantity"] += 1
+        
+        db.session.delete(inv)
+
+    for products in allProducts.values():
+        invProduct  = Invoice_Product(
+            name = products["name"],
+            weight = products["weight"],
+            price = products["price"],
+            quantity = products["quantity"],
+            invoice_id = products["invoice_id"]
+            )
+        db.session.add(invProduct)
+
+    db.session.commit()
+
+    return jsonify({'message' : 'invoice confirmed'})
+
+    
+    

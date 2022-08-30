@@ -10,8 +10,6 @@ class Users(db.Model):
     name = db.Column(db.String(50))
     password = db.Column(db.String(50))
     admin = db.Column(db.Boolean, default=False)
-    invoices = db.relationship("invoice")
-    currentInvoices = db.relationship("currentinvoice")
 
 class Product(db.Model):
     __tablename__ = "product"
@@ -19,7 +17,6 @@ class Product(db.Model):
     name = db.Column(db.String(50), unique=True, nullable=False)
     weight = db.Column(db.String(20), nullable=False)
     price = db.Column(db.String(50), nullable=False)
-    invoices_products = db.relationship("currentinvoice_product")
 
 class User_Token(db.Model):
     __tablename__ = "user_token"
@@ -47,7 +44,7 @@ class Invoice_Product(db.Model):
     """
     __tablename__ = "invoice_product"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(50), nullable=False)
     weight = db.Column(db.String(20), nullable=False)
     price = db.Column(db.String(50), nullable=False)
     quantity = db.Column(db.Integer, default=1)
@@ -59,7 +56,7 @@ class CurrentInvoice(db.Model):
     before the purchase is completed.
     """
     __tablename__ = "currentinvoice"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
 class CurrentInvoice_Product(db.Model):
