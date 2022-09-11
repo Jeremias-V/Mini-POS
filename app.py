@@ -1,3 +1,4 @@
+from queue import Empty
 from flask import Flask, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
@@ -84,7 +85,7 @@ def login_user():
         
     if user is not None and check_password_hash(user.password, auth.password):
         token = jwt.encode({'public_id': user.public_id, 'exp' :\
-                datetime.datetime.utcnow() + datetime.timedelta(minutes=10)}, app.config['SECRET_KEY'])
+                datetime.datetime.utcnow() + datetime.timedelta(minutes=15)}, app.config['SECRET_KEY'])
 
         user_token = User_Token.query.filter_by(name=auth.username).first()
 
@@ -96,7 +97,8 @@ def login_user():
 
         db.session.commit()
 
-        # TODO: return the token from the User_Token table (last login token).
+        # TODO: return the token from the User_Token table (last login token)
+        # and manage token time extensions.
         return jsonify({'token' : token})
 
     return jsonify({'message': 'could not verify'}), 401
@@ -285,5 +287,53 @@ def confirm_purchase(current_user):
 
     return jsonify({'message' : 'invoice confirmed'})
 
-    
-    
+@app.route('/report', methods=['POST', 'GET'])
+@token_required
+def sales_report(current_user):
+    """
+    Generate a sales report within a given date interval.
+    The report includes the date interval, the products,
+    each product quantity, total price given the quantity
+    and the total profits for all invoices over the date range.
+    """
+
+    if not current_user.admin:
+        return jsonify({'message': 'admin required for this action'}), 401
+
+    data = request.get_json()
+    initial_date = data["from"]
+    final_date = data["to"]
+
+    # might not work because of the UTC format stored in DB
+    invoices = Invoice.query.filter(Invoice.date.between(initial_date, final_date)).all()
+
+    if invoices is None or invoices is Empty:
+        return jsonify({'message': 'could not find a table entry from \
+            Invoice with dates [{}, {}]'.format(initial_date, final_date)}), 404
+
+    report = {}
+    report["date"] = {"from": initial_date, "to": final_date}
+    report['total_profits'] = 0
+    report['products'] = {}
+
+    for inv in invoices:
+        products = Invoice_Product.query.filter_by(invoice_id=inv.id).all()
+
+        if products is None:
+            return jsonify({'message': 'could not find a table entry from \
+                Invoice_Product with invoice_id = {}'.format(inv.id)}), 404
+
+        for product in products:
+
+            if product.name not in report['products']:
+                report['products'][product.name] = {}
+                report['products'][product.name]['quantity'] = product.quantity
+                report['products'][product.name]['total_price'] = (int(product.quantity) * int(product.price))
+            else:
+                report['products'][product.name]['quantity'] += product.quantity
+                report['products'][product.name]['total_price'] += (int(product.quantity) * int(product.price))
+            report['total_profits'] += report['products'][product.name]['total_price'] 
+        
+
+    return jsonify({'report' : report})
+

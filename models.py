@@ -1,5 +1,6 @@
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
+from email.policy import default
+from flask_sqlalchemy import SQLAlchemy, BaseQuery
 
 db = SQLAlchemy()
 
@@ -18,6 +19,17 @@ class Product(db.Model):
     weight = db.Column(db.String(20), nullable=False)
     price = db.Column(db.String(50), nullable=False)
 
+class Product_Quantity(db.Model):
+    """
+    TODO: Implement logic when creating products, and adding them to invoice.
+    Table to relate a product to its available quantity.
+    """
+    __tablename__ = "product_quantity"
+    id = db.Column(db.Integer, primary_key=True)
+    quantity = db.Column(db.Integer, default=0)
+    product_id = db.Column(db.Integer, db.ForeignKey("product.id"))
+    
+
 class User_Token(db.Model):
     __tablename__ = "user_token"
     id = db.Column(db.Integer, primary_key=True)
@@ -33,7 +45,7 @@ class Invoice(db.Model):
     __tablename__ = "invoice"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    date = db.Column(db.DateTime, default=datetime.utcnow())
+    date = db.Column(db.DateTime, default=datetime.utcnow().date())
 
 class Invoice_Product(db.Model):
     """
