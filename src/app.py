@@ -17,6 +17,8 @@ app.config["SECRET_KEY"] = environ.get("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////" + environ.get("DB_PATH")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
+ADMIN_KEY = environ.get("ADMIN_KEY")
+
 db.init_app(app)
 
 def token_required(f):
@@ -49,19 +51,30 @@ def signup_user():
     Register a new user, if the username already existis in DB it fails,
     if not it creates the new user and stores its password encrypted with
     sha256.
+
+    Also, if admin key is given, and it is correct, creates an admin user.
     """
 
     data = request.get_json()
 
-    user = Users.query.filter_by(name=data['name']).first()
+    user = Users.query.filter_by(username=data['username']).first()
 
     if user is not None:
         return jsonify({'message': 'user already exists'}), 409
 
     hashed_password = generate_password_hash(data['password'], method='sha256')
 
-    adm = True if data['admin'] == "True" else False
-    new_user = Users(public_id=str(uuid.uuid4()), name=data['name'], password=hashed_password, admin=adm)
+    is_admin = False
+    if 'admin_key' in data and data['admin_key'] == ADMIN_KEY:
+        is_admin = True
+    elif 'admin_key' in data:
+        return jsonify({'message': 'Invalid key, user not created'}), 403
+
+    new_user = Users(public_id=str(uuid.uuid4()),
+                     username=data['username'],
+                     password=hashed_password,
+                     admin=is_admin)
+    
     db.session.add(new_user)
     db.session.commit()
 
@@ -79,7 +92,7 @@ def login_user():
     auth = request.authorization
 
     if not auth or not auth.username or not auth.password:
-        return jsonify({'message': 'could not verify'}), 401
+        return jsonify({'message': 'authorization resquest data not found'}), 403
 
     user = Users.query.filter_by(name=auth.username).first()
         
@@ -87,21 +100,9 @@ def login_user():
         token = jwt.encode({'public_id': user.public_id, 'exp' :\
                 datetime.datetime.utcnow() + datetime.timedelta(minutes=15)}, app.config['SECRET_KEY'])
 
-        user_token = User_Token.query.filter_by(name=auth.username).first()
-
-        if user_token is not None:
-            user_token.token = token
-        else:
-            new_user_token = User_Token(name=auth.username, token=token)
-            db.session.add(new_user_token)
-
-        db.session.commit()
-
-        # TODO: return the token from the User_Token table (last login token)
-        # and manage token time extensions.
         return jsonify({'token' : token})
 
-    return jsonify({'message': 'could not verify'}), 401
+    return jsonify({'message': 'invalid username or password'}), 401
 
 
 @app.route('/product', methods=['POST', 'GET'])

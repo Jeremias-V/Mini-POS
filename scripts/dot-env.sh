@@ -17,6 +17,11 @@ echo -n "DB_PATH='" >> .env
 echo -n "$(pwd)/instance/mini-pos.db" >> .env
 echo "'" >> .env
 
+# ADMIN REGISTER KEY
+echo -n "ADMIN_KEY='" >> .env
+echo -n "$(python -c 'import secrets; print(secrets.token_hex()[:8])')" >> .env
+echo "'" >> .env
+
 echo "The .env file has been successfully created!"
 
 exit 0

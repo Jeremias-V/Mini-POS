@@ -8,16 +8,17 @@ class Users(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.Integer)
-    name = db.Column(db.String(50))
+    username = db.Column(db.String(50))
     password = db.Column(db.String(50))
     admin = db.Column(db.Boolean, default=False)
 
 class Product(db.Model):
     __tablename__ = "product"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
-    weight = db.Column(db.String(20), nullable=False)
-    price = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    weight = db.Column(db.Float, nullable=False)
+    unit = db.Column(db.String(3), nullable=False)
 
 class Product_Quantity(db.Model):
     """
@@ -30,11 +31,11 @@ class Product_Quantity(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"))
     
 
-class User_Token(db.Model):
-    __tablename__ = "user_token"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
-    token = db.Column(db.String(200), unique=True, nullable=False)
+# class User_Token(db.Model):
+#     __tablename__ = "user_token"
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(50), unique=True, nullable=False)
+#     token = db.Column(db.String(200), unique=True, nullable=False)
 
 class Invoice(db.Model):
     """
