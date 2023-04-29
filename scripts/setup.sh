@@ -5,7 +5,7 @@ if [ -f "scripts/.setup-done" ]; then
     exit 1
 fi
 
-virtualenv --python="$(which python3.9)" ./src
+virtualenv --python="$(which python3.9)" ./src/venv
 if [ $? -eq 0 ]; then
     echo -e "\nSuccessfully created the python virtual environment.\n"
 else
@@ -13,7 +13,7 @@ else
     exit 1
 fi
 
-source src/bin/activate
+source src/venv/bin/activate
 if [ $? -eq 0 ]; then
     echo -e "\nPython virtual environment activated!\n"
 else

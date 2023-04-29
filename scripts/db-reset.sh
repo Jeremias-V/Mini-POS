@@ -19,7 +19,7 @@ rm instance/mini-pos.db
 
 sqlite3 instance/mini-pos.db ".databases"
 
-source src/bin/activate
+source src/venv/bin/activate
 
 (cd src/; python3 -c 'from models import db; from app import app; db.init_app(app); db.create_all(app=app)')
 

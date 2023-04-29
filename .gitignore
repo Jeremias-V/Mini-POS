@@ -9,3 +9,4 @@ lib64/
 .*
 *.db
 pyvenv.cfg
+!.dockerignore

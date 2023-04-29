@@ -1,0 +1,14 @@
+# Directories
+**/__pycache__/
+**/bin/
+**/include/
+**/lib/
+**/lib64/
+**/instance/
+
+# Files
+**/.git
+**/.*
+**/*.db
+**/pyvenv.cfg
+**/run.sh
