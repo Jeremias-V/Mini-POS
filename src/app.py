@@ -94,7 +94,7 @@ def login_user():
     if not auth or not auth.username or not auth.password:
         return jsonify({'message': 'authorization resquest data not found'}), 403
 
-    user = Users.query.filter_by(name=auth.username).first()
+    user = Users.query.filter_by(username=auth.username).first()
         
     if user is not None and check_password_hash(user.password, auth.password):
         token = jwt.encode({'public_id': user.public_id, 'exp' :\
