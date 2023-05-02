@@ -8,6 +8,8 @@ from models import *
 import uuid
 import jwt
 import datetime
+import http_status
+import utils
 
 load_dotenv()
 
@@ -31,14 +33,14 @@ def token_required(f):
             token = request.headers['x-access-tokens']
 
         if not token:
-            return jsonify({'message': 'a valid token is missing'}), 401
+            return jsonify({'message': 'a valid token is missing'}), http_status.UNAUTHORIZED
 
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS256")
             current_user = Users.query.filter_by(public_id=data['public_id']).first()
         except Exception as e:
             print("Exception: ", e)
-            return jsonify({'message': 'token is invalid'}), 401
+            return jsonify({'message': 'token is invalid'}), http_status.UNAUTHORIZED
 
         return f(current_user, *args, **kwargs)
         
@@ -49,7 +51,7 @@ def token_required(f):
 def signup_user():
     """
     Register a new user, if the username already existis in DB it fails,
-    if not it creates the new user and stores its password encrypted with
+    if not it creates the new user and stores its password hashed with
     sha256.
 
     Also, if admin key is given, and it is correct, creates an admin user.
@@ -60,7 +62,7 @@ def signup_user():
     user = Users.query.filter_by(username=data['username']).first()
 
     if user is not None:
-        return jsonify({'message': 'user already exists'}), 409
+        return jsonify({'message': 'user already exists'}), http_status.CONFLICT
 
     hashed_password = generate_password_hash(data['password'], method='sha256')
 
@@ -68,7 +70,7 @@ def signup_user():
     if 'admin_key' in data and data['admin_key'] == ADMIN_KEY:
         is_admin = True
     elif 'admin_key' in data:
-        return jsonify({'message': 'Invalid key, user not created'}), 403
+        return jsonify({'message': 'Invalid key, user not created'}), http_status.FORBIDDEN
 
     new_user = Users(public_id=str(uuid.uuid4()),
                      username=data['username'],
@@ -92,7 +94,7 @@ def login_user():
     auth = request.authorization
 
     if not auth or not auth.username or not auth.password:
-        return jsonify({'message': 'authorization resquest data not found'}), 403
+        return jsonify({'message': 'authorization resquest data not found'}), http_status.FORBIDDEN
 
     user = Users.query.filter_by(username=auth.username).first()
         
@@ -102,34 +104,96 @@ def login_user():
 
         return jsonify({'token' : token})
 
-    return jsonify({'message': 'invalid username or password'}), 401
+    return jsonify({'message': 'invalid username or password'}), http_status.UNAUTHORIZED
 
 
-@app.route('/product', methods=['POST', 'GET'])
+@app.route('/product/create', methods=['POST', 'GET'])
 @token_required
 def create_product(current_user):
     """
-    Create a new product if the product name is not alredy in
+    Create a new product if the product name is not already in
     DB, also check if the user trying to create the product is
     an admin, else fail.
     """
     
     if not current_user.admin:
-        return jsonify({'message': 'admin required for this action'}), 401
+        return jsonify({'message': 'admin required for this action'}), http_status.UNAUTHORIZED
     
     data = request.get_json()
     product = Product.query.filter_by(name=data['name']).first()
 
     if product is not None:
-        return jsonify({'message': 'product already exists'}), 409
+        return jsonify({'message': 'product already exists'}), http_status.CONFLICT
+    
+    _name = data['name']
+    if len(_name) < 3 or len(_name) > 100 or len(_name) == 0 or not _name.replace(' ', '').isalpha():
+        return jsonify({'message': 'invalid name for product'}), http_status.FORBIDDEN
+    
+    if not data['price'].isnumeric():
+        return jsonify({'message': 'invalid value for price, must be an integer'}), http_status.FORBIDDEN
+    
+    _price = int(data['price'])
 
+    if _price <= 0 or _price > 10**6:
+        return jsonify({'message': 'invalid value for price, 0 < price <= 1000000'}), http_status.FORBIDDEN
+    
+    if not utils.is_float(data['weight']):
+        return jsonify({'message': 'invalid value for weight, must be a float'}), http_status.FORBIDDEN
 
-    new_product = Product(name=data['name'], weight=data['weight'], price=data['price'])
+    _weight = float(data['weight'])
+
+    if _weight <= 0 or _weight >= 1000:
+        return jsonify({'message': 'invalid value for weight, 0 < weight < 1000'}), http_status.FORBIDDEN
+
+    _unit = data['unit']
+
+    if not _unit.isalpha() or _unit not in ['mg', 'g', 'kg']:
+        return jsonify({'message': 'invalid value for unit, must be mg, g or kg'}), http_status.FORBIDDEN
+
+    new_product = Product(name=_name,
+                          price=_price,
+                          weight=_weight,
+                          unit=_unit)
+    
     db.session.add(new_product)
+
+    db.session.flush()
+
+    new_product_quantity = Product_Quantity(product_id=new_product.id)
+
+    db.session.add(new_product_quantity)
+    
     db.session.commit()
 
     return jsonify({'message' : 'new product created'})
 
+@app.route('/product/add', methods=['POST', 'GET'])
+@token_required
+def add_product(current_user):
+    """
+    Sum the available quantity to an existing product.
+    Must be an admin.
+    """
+    
+    if not current_user.admin:
+        return jsonify({'message': 'admin required for this action'}), http_status.UNAUTHORIZED
+    
+    data = request.get_json()
+    product = Product.query.filter_by(name=data['name']).first()
+
+    if product is None:
+        return jsonify({'message': 'product does not exist'}), http_status.NOTFOUND
+    
+    if not data['quantity'].isnumeric():
+        return jsonify({'message': 'invalid value for quantity'}), http_status.FORBIDDEN
+
+    product_quantity = Product_Quantity.query.filter_by(product_id=product.id).first()
+
+    product_quantity.quantity += int(data['quantity'])
+
+    db.session.commit()
+
+    return jsonify({'message' : 'new product quantity added'})
 
 @app.route('/products', methods=['GET'])
 @token_required
@@ -143,11 +207,18 @@ def get_products(current_user):
     output = []
     for product in products:
 
+        product_quantity = Product_Quantity.query.filter_by(product_id=product.id).first()
+
+        if product_quantity is None:
+            return jsonify({'message' : 'no quantity found for {}'.format(product.name)}), http_status.NOTFOUND
+
         product_data = {}
         product_data['id'] = product.id
         product_data['name'] = product.name
         product_data['weight'] = product.weight
         product_data['price'] = product.price
+        product_data['unit'] = product.unit
+        product_data['quantity'] = product_quantity.quantity
         output.append(product_data)
 
     return jsonify({'list_of_products' : output})
@@ -164,12 +235,14 @@ def delete_product(current_user, product_id):
     """
 
     if not current_user.admin:
-        return jsonify({'message': 'admin required for this action'}), 401
+        return jsonify({'message': 'admin required for this action'}), http_status.UNAUTHORIZED
 
     product = Product.query.filter_by(id=product_id).first()
 
+    #TODO: Check if product is not in current invoice before deleting.
+
     if product is None:
-       return jsonify({'message': 'product does not exist'}), 404
+       return jsonify({'message': 'product does not exist'}), http_status.NOTFOUND
 
     db.session.delete(product)
     db.session.commit()
@@ -194,7 +267,8 @@ def add_to_invoice(current_user, product_id):
     product = Product.query.filter_by(id=product_id).first()
 
     if product is None:
-       return jsonify({'message': 'product does not exist'}), 404
+       return jsonify({'message': 'product does not exist'}), http_status.NOTFOUND
+
 
     curr_invoice = CurrentInvoice.query.filter_by(id=current_user.id).first()
 
@@ -203,8 +277,14 @@ def add_to_invoice(current_user, product_id):
         db.session.add(curr_invoice)
     
     db.session.flush()
+
+    # TODO: When adding a product to current invoice product, the quanity must be valid.
+
     invoice_product = CurrentInvoice_Product(currentinvoice_id=curr_invoice.id,\
                                             product_id=product.id)
+    
+    # TODO: After checking if the quantity is valid, subtract the invoice quantity from the Product_Quantity
+
     db.session.add(invoice_product)
     db.session.commit()
 
@@ -220,7 +300,7 @@ def get_current_invoice(current_user):
     currentInv = CurrentInvoice.query.filter_by(user_id=current_user.id).first()
 
     if currentInv is None:
-        return jsonify({'message': 'no current invoice associated to {}'.format(current_user.name)}), 404
+        return jsonify({'message': 'no current invoice associated to {}'.format(current_user.name)}), http_status.NOTFOUND
 
     currentInvProducts = CurrentInvoice_Product.query.filter_by(currentinvoice_id=currentInv.id).all()
 
@@ -250,7 +330,7 @@ def confirm_purchase(current_user):
     currentInv = CurrentInvoice.query.filter_by(user_id=current_user.id).first()
 
     if currentInv is None:
-        return jsonify({'message': 'no current invoice associated to {}'.format(current_user.name)}), 404
+        return jsonify({'message': 'no current invoice associated to {}'.format(current_user.name)}), http_status.NOTFOUND
     
     currentInvProducts = CurrentInvoice_Product.query.filter_by(currentinvoice_id=currentInv.id).all()
 
@@ -299,7 +379,7 @@ def sales_report(current_user):
     """
 
     if not current_user.admin:
-        return jsonify({'message': 'admin required for this action'}), 401
+        return jsonify({'message': 'admin required for this action'}), http_status.UNAUTHORIZED
 
     data = request.get_json()
     initial_date = data["from"]
@@ -310,7 +390,7 @@ def sales_report(current_user):
 
     if invoices is None or invoices is Empty:
         return jsonify({'message': 'could not find a table entry from \
-            Invoice with dates [{}, {}]'.format(initial_date, final_date)}), 404
+            Invoice with dates [{}, {}]'.format(initial_date, final_date)}), http_status.NOTFOUND
 
     report = {}
     report["date"] = {"from": initial_date, "to": final_date}
@@ -322,7 +402,7 @@ def sales_report(current_user):
 
         if products is None:
             return jsonify({'message': 'could not find a table entry from \
-                Invoice_Product with invoice_id = {}'.format(inv.id)}), 404
+                Invoice_Product with invoice_id = {}'.format(inv.id)}), http_status.NOTFOUND
 
         for product in products:
 
