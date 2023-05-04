@@ -1,6 +1,7 @@
 from queue import Empty
 from flask import Flask, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_cors import CORS
 from dotenv import load_dotenv
 from functools import wraps
 from os import environ
@@ -14,6 +15,7 @@ import utils
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 
 app.config["SECRET_KEY"] = environ.get("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////" + environ.get("DB_PATH")
@@ -46,6 +48,11 @@ def token_required(f):
         
     return decorated
 
+@app.route('/authorize', methods=['GET'])
+@token_required
+def authorize(current_user):
+    return jsonify({'message': 'Your token is valid!',
+                    'username': current_user.username})
 
 @app.route('/register', methods=['GET', 'POST'])
 def signup_user():
@@ -59,10 +66,14 @@ def signup_user():
 
     data = request.get_json()
 
+    if len(data['username']) < 3 or len(data['password']) < 3:
+        return jsonify({'message': 'Invalid values for username or password'}), http_status.FORBIDDEN
+
     user = Users.query.filter_by(username=data['username']).first()
 
     if user is not None:
         return jsonify({'message': 'user already exists'}), http_status.CONFLICT
+    
 
     hashed_password = generate_password_hash(data['password'], method='sha256')
 
@@ -300,7 +311,7 @@ def get_current_invoice(current_user):
     currentInv = CurrentInvoice.query.filter_by(user_id=current_user.id).first()
 
     if currentInv is None:
-        return jsonify({'message': 'no current invoice associated to {}'.format(current_user.name)}), http_status.NOTFOUND
+        return jsonify({'message': 'no current invoice associated to {}'.format(current_user.username)}), http_status.NOTFOUND
 
     currentInvProducts = CurrentInvoice_Product.query.filter_by(currentinvoice_id=currentInv.id).all()
 
@@ -313,7 +324,7 @@ def get_current_invoice(current_user):
         product_data['price'] = product.price
         products.append(product_data)
 
-    return jsonify({'cashier' : current_user.name, 'list_of_products' : products})
+    return jsonify({'cashier' : current_user.username, 'list_of_products' : products})
     
 
 @app.route('/confirm', methods=['GET'])
@@ -330,7 +341,7 @@ def confirm_purchase(current_user):
     currentInv = CurrentInvoice.query.filter_by(user_id=current_user.id).first()
 
     if currentInv is None:
-        return jsonify({'message': 'no current invoice associated to {}'.format(current_user.name)}), http_status.NOTFOUND
+        return jsonify({'message': 'no current invoice associated to {}'.format(current_user.username)}), http_status.NOTFOUND
     
     currentInvProducts = CurrentInvoice_Product.query.filter_by(currentinvoice_id=currentInv.id).all()
 
