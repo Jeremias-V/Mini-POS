@@ -30,13 +30,6 @@ class Product_Quantity(db.Model):
     quantity = db.Column(db.Integer, default=0)
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"))
     
-
-# class User_Token(db.Model):
-#     __tablename__ = "user_token"
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(50), unique=True, nullable=False)
-#     token = db.Column(db.String(200), unique=True, nullable=False)
-
 class Invoice(db.Model):
     """
     The invoice has a creation time and an user who
@@ -60,6 +53,7 @@ class Invoice_Product(db.Model):
     name = db.Column(db.String(50), nullable=False)
     weight = db.Column(db.String(20), nullable=False)
     price = db.Column(db.String(50), nullable=False)
+    unit = db.Column(db.String(3), nullable=False)
     quantity = db.Column(db.Integer, default=1)
     invoice_id = db.Column(db.Integer, db.ForeignKey("invoice.id"))
 

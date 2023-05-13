@@ -250,10 +250,14 @@ def delete_product(current_user, product_id):
 
     product = Product.query.filter_by(id=product_id).first()
 
-    #TODO: Check if product is not in current invoice before deleting.
 
     if product is None:
        return jsonify({'message': 'product does not exist'}), http_status.NOTFOUND
+
+    current_product = CurrentInvoice_Product.query.filter_by(product_id=product_id).first()
+
+    if current_product is not None:
+        return jsonify({'message': 'cannot delete a product while in current invoice'}), http_status.FORBIDDEN
 
     db.session.delete(product)
     db.session.commit()
@@ -279,7 +283,18 @@ def add_to_invoice(current_user, product_id):
 
     if product is None:
        return jsonify({'message': 'product does not exist'}), http_status.NOTFOUND
+    
+    product_quantity = Product_Quantity.query.filter_by(product_id=product_id).first()
 
+    if product_quantity is None:
+        return jsonify({'message': 'product quantity not found'}), http_status.NOTFOUND
+    
+    if product_quantity.quantity <= 0:
+        return jsonify({'message': 'not enough products in inventory'}), http_status.FORBIDDEN
+    
+    product_quantity.quantity -= 1
+
+    db.session.flush()
 
     curr_invoice = CurrentInvoice.query.filter_by(id=current_user.id).first()
 
@@ -289,13 +304,9 @@ def add_to_invoice(current_user, product_id):
     
     db.session.flush()
 
-    # TODO: When adding a product to current invoice product, the quanity must be valid.
-
     invoice_product = CurrentInvoice_Product(currentinvoice_id=curr_invoice.id,\
                                             product_id=product.id)
     
-    # TODO: After checking if the quantity is valid, subtract the invoice quantity from the Product_Quantity
-
     db.session.add(invoice_product)
     db.session.commit()
 
@@ -321,6 +332,7 @@ def get_current_invoice(current_user):
         product_data = {}
         product_data['name'] = product.name
         product_data['weight'] = product.weight
+        product_data['unit'] = product.unit
         product_data['price'] = product.price
         products.append(product_data)
 
@@ -357,6 +369,7 @@ def confirm_purchase(current_user):
                 "name": product.name,
                 "weight": product.weight,
                 "price": product.price,
+                "unit": product.unit,
                 "quantity": 1,
                 "invoice_id": invoice.id
                 }
@@ -370,6 +383,7 @@ def confirm_purchase(current_user):
             name = products["name"],
             weight = products["weight"],
             price = products["price"],
+            unit = products["unit"],
             quantity = products["quantity"],
             invoice_id = products["invoice_id"]
             )
@@ -396,7 +410,6 @@ def sales_report(current_user):
     initial_date = data["from"]
     final_date = data["to"]
 
-    # might not work because of the UTC format stored in DB
     invoices = Invoice.query.filter(Invoice.date.between(initial_date, final_date)).all()
 
     if invoices is None or invoices is Empty:
