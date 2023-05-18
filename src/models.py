@@ -1,6 +1,5 @@
 from datetime import datetime
-from email.policy import default
-from flask_sqlalchemy import SQLAlchemy, BaseQuery
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 

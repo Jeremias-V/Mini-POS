@@ -1,6 +1,6 @@
 #!/bin/bash
 
 source src/venv/bin/activate
-(cd src; flask run)
+flask --app src/ run
 
 exit 0

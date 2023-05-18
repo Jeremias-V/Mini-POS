@@ -1,29 +1,15 @@
 from queue import Empty
-from flask import Flask, request, jsonify
+from flask import request, jsonify, Blueprint, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_cors import CORS
-from dotenv import load_dotenv
 from functools import wraps
-from os import environ
-from models import *
+from .models import *
+from . import http_status
+from .utils import *
 import uuid
 import jwt
 import datetime
-import http_status
-import utils
 
-load_dotenv()
-
-app = Flask(__name__)
-CORS(app)
-
-app.config["SECRET_KEY"] = environ.get("SECRET_KEY")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////" + environ.get("DB_PATH")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
-
-ADMIN_KEY = environ.get("ADMIN_KEY")
-
-db.init_app(app)
+main = Blueprint("main", __name__)
 
 def token_required(f):
     @wraps(f)
@@ -38,7 +24,7 @@ def token_required(f):
             return jsonify({'message': 'a valid token is missing'}), http_status.UNAUTHORIZED
 
         try:
-            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS256")
+            data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms="HS256")
             current_user = Users.query.filter_by(public_id=data['public_id']).first()
         except Exception as e:
             print("Exception: ", e)
@@ -48,13 +34,13 @@ def token_required(f):
         
     return decorated
 
-@app.route('/authorize', methods=['GET'])
+@main.route('/authorize', methods=['GET'])
 @token_required
 def authorize(current_user):
     return jsonify({'message': 'Your token is valid!',
                     'username': current_user.username})
 
-@app.route('/register', methods=['GET', 'POST'])
+@main.route('/register', methods=['GET', 'POST'])
 def signup_user():
     """
     Register a new user, if the username already existis in DB it fails,
@@ -78,7 +64,7 @@ def signup_user():
     hashed_password = generate_password_hash(data['password'], method='sha256')
 
     is_admin = False
-    if 'admin_key' in data and data['admin_key'] == ADMIN_KEY:
+    if 'admin_key' in data and data['admin_key'] == current_app.config['ADMIN_KEY']:
         is_admin = True
     elif 'admin_key' in data:
         return jsonify({'message': 'Invalid key, user not created'}), http_status.FORBIDDEN
@@ -94,7 +80,7 @@ def signup_user():
     return jsonify({'message': 'registered successfully'})
     
 
-@app.route('/login', methods=['GET', 'POST'])
+@main.route('/login', methods=['GET', 'POST'])
 def login_user():
     """
     Sign in as a registered user, if the user doesn't exists or the
@@ -111,14 +97,14 @@ def login_user():
         
     if user is not None and check_password_hash(user.password, auth.password):
         token = jwt.encode({'public_id': user.public_id, 'exp' :\
-                datetime.datetime.utcnow() + datetime.timedelta(minutes=15)}, app.config['SECRET_KEY'])
+                datetime.datetime.utcnow() + datetime.timedelta(minutes=15)}, current_app.config['SECRET_KEY'])
 
         return jsonify({'token' : token})
 
     return jsonify({'message': 'invalid username or password'}), http_status.UNAUTHORIZED
 
 
-@app.route('/product/create', methods=['POST', 'GET'])
+@main.route('/product/create', methods=['POST', 'GET'])
 @token_required
 def create_product(current_user):
     """
@@ -148,7 +134,7 @@ def create_product(current_user):
     if _price <= 0 or _price > 10**6:
         return jsonify({'message': 'invalid value for price, 0 < price <= 1000000'}), http_status.FORBIDDEN
     
-    if not utils.is_float(data['weight']):
+    if not is_float(data['weight']):
         return jsonify({'message': 'invalid value for weight, must be a float'}), http_status.FORBIDDEN
 
     _weight = float(data['weight'])
@@ -178,7 +164,7 @@ def create_product(current_user):
 
     return jsonify({'message' : 'new product created'})
 
-@app.route('/product/add', methods=['POST', 'GET'])
+@main.route('/product/add', methods=['POST', 'GET'])
 @token_required
 def add_product(current_user):
     """
@@ -206,7 +192,7 @@ def add_product(current_user):
 
     return jsonify({'message' : 'new product quantity added'})
 
-@app.route('/products', methods=['GET'])
+@main.route('/products', methods=['GET'])
 @token_required
 def get_products(current_user):
     """
@@ -235,7 +221,7 @@ def get_products(current_user):
     return jsonify({'list_of_products' : output})
 
 
-@app.route('/products/<product_id>', methods=['DELETE'])
+@main.route('/products/<product_id>', methods=['DELETE'])
 @token_required
 def delete_product(current_user, product_id):
     """
@@ -264,11 +250,7 @@ def delete_product(current_user, product_id):
 
     return jsonify({'message': 'Product deleted'})
 
-if  __name__ == '__main__':  
-    app.run()
-
-
-@app.route('/add/<product_id>', methods=['POST', 'GET'])
+@main.route('/add/<product_id>', methods=['POST', 'GET'])
 @token_required
 def add_to_invoice(current_user, product_id):
     """
@@ -313,7 +295,7 @@ def add_to_invoice(current_user, product_id):
     return jsonify({'message' : 'product added to your invoice'})
 
 
-@app.route('/invoice', methods=['GET'])
+@main.route('/invoice', methods=['GET'])
 @token_required
 def get_current_invoice(current_user):
     """
@@ -339,7 +321,7 @@ def get_current_invoice(current_user):
     return jsonify({'cashier' : current_user.username, 'list_of_products' : products})
     
 
-@app.route('/confirm', methods=['GET'])
+@main.route('/confirm', methods=['GET'])
 @token_required
 def confirm_purchase(current_user):
     """
@@ -393,7 +375,7 @@ def confirm_purchase(current_user):
 
     return jsonify({'message' : 'invoice confirmed'})
 
-@app.route('/report', methods=['POST', 'GET'])
+@main.route('/report', methods=['POST', 'GET'])
 @token_required
 def sales_report(current_user):
     """

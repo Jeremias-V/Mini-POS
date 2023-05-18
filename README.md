@@ -1,5 +1,5 @@
 # Mini-POS
-A feature limited Point Of Sale (POS) web based system.
+A feature limited Point Of Sale (POS) API.
 
 ## Setup project
 1. Install `Python 3.9`, `sqlite3` and `virtualenv`.
@@ -24,4 +24,8 @@ To stop the container you can use this command:
 To delete the image you can use this command:
 
 `sudo docker image rm -f $(sudo docker images | grep python-docker | awk '{print $3}')`
+
+## Run Tests
+
+`pytest -W ignore::DeprecationWarning`
 
