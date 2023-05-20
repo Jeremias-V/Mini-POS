@@ -27,5 +27,7 @@ To delete the image you can use this command:
 
 ## Run Tests
 
-`pytest -W ignore::DeprecationWarning`
+- Run `bash scripts/test.sh` from project parent directory to run the unit tests.
+- Run `bash scripts/coverage.sh` to get the tests coverage, if you want an interactive report with the lines that were executed, run `coverage html`.
+
 

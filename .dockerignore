@@ -5,6 +5,7 @@
 **/lib/
 **/lib64/
 **/instance/
+**/postman/
 
 # Files
 **/.git

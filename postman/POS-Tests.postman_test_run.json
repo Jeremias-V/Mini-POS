@@ -1,0 +1,581 @@
+{
+	"id": "4c13a0ed-91b1-49f7-9f8c-d730e05787f2",
+	"name": "POS Tests",
+	"timestamp": "2023-05-20T20:04:13.638Z",
+	"collection_id": "27245561-e76ca9be-3541-4e71-91c0-8b214998f0dd",
+	"folder_id": 0,
+	"environment_id": "27245561-d3200fb9-d4a6-49fe-bdeb-7b0d454babc9",
+	"totalPass": 39,
+	"delay": "200",
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2023-05-20T20:04:09.901Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "bdbade1e-a790-4a56-aad5-887d75ed31a3",
+			"name": "Register User",
+			"url": "http://127.0.0.1:5000/register",
+			"time": 40,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				40
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "1981c18b-50ec-43fc-ba3c-76306fac19b3",
+			"name": "Register Admin",
+			"url": "http://127.0.0.1:5000/register",
+			"time": 19,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				19
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "0ca49de2-cbe9-4d24-baf7-67e7a9e09a36",
+			"name": "Login",
+			"url": "http://127.0.0.1:5000/login",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "55c05cdb-a63c-4662-b6b2-98bcfe759cee",
+			"name": "Get Products Unauthorized",
+			"url": "http://127.0.0.1:5000/products",
+			"time": 3,
+			"responseCode": {
+				"code": 401,
+				"name": "UNAUTHORIZED"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 401": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 401": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				3
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 401": true
+				}
+			]
+		},
+		{
+			"id": "42915a01-0cc5-42e5-8aff-9c0c76ab1bf4",
+			"name": "Get Products Authorized",
+			"url": "http://127.0.0.1:5000/products",
+			"time": 10,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "3f716861-4662-4aa1-9af7-59964777c795",
+			"name": "Create Product",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 25,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				25
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "71dc358e-da38-489d-ba48-1e9a0643d2f5",
+			"name": "Add Product Quantity",
+			"url": "http://127.0.0.1:5000/product/add",
+			"time": 23,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				23
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "9a9068b7-8f22-4eb8-8b1e-7d9e859e7a4f",
+			"name": "Add To Invoice",
+			"url": "http://127.0.0.1:5000/add/1",
+			"time": 31,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				31
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "afe54950-f70e-4c9b-9c3d-1c004acb1361",
+			"name": "View Current Invoice",
+			"url": "http://127.0.0.1:5000/invoice",
+			"time": 9,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "7466cf2c-6edc-43d9-b497-ed75239612c8",
+			"name": "Confirm Purchase",
+			"url": "http://127.0.0.1:5000/confirm",
+			"time": 26,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				26
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "3fe4db55-766b-4b4c-822a-2c729158ca6f",
+			"name": "Get Report",
+			"url": "http://127.0.0.1:5000/report",
+			"time": 9,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "d233eba1-ae2d-4df7-8782-55854436caf9",
+			"name": "Delete Product",
+			"url": "http://127.0.0.1:5000/products/1",
+			"time": 25,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				25
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "bb5ac393-5041-43aa-908a-52c0221ed81b",
+			"name": "Authorize",
+			"url": "http://127.0.0.1:5000/authorize",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true,
+				"Login matches authorized user": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Login matches authorized user": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true,
+					"Login matches authorized user": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 234,
+	"collection": {
+		"requests": [
+			{
+				"id": "bdbade1e-a790-4a56-aad5-887d75ed31a3",
+				"method": "POST"
+			},
+			{
+				"id": "1981c18b-50ec-43fc-ba3c-76306fac19b3",
+				"method": "POST"
+			},
+			{
+				"id": "0ca49de2-cbe9-4d24-baf7-67e7a9e09a36",
+				"method": "GET"
+			},
+			{
+				"id": "55c05cdb-a63c-4662-b6b2-98bcfe759cee",
+				"method": "GET"
+			},
+			{
+				"id": "42915a01-0cc5-42e5-8aff-9c0c76ab1bf4",
+				"method": "GET"
+			},
+			{
+				"id": "3f716861-4662-4aa1-9af7-59964777c795",
+				"method": "POST"
+			},
+			{
+				"id": "71dc358e-da38-489d-ba48-1e9a0643d2f5",
+				"method": "POST"
+			},
+			{
+				"id": "9a9068b7-8f22-4eb8-8b1e-7d9e859e7a4f",
+				"method": "GET"
+			},
+			{
+				"id": "afe54950-f70e-4c9b-9c3d-1c004acb1361",
+				"method": "GET"
+			},
+			{
+				"id": "7466cf2c-6edc-43d9-b497-ed75239612c8",
+				"method": "GET"
+			},
+			{
+				"id": "3fe4db55-766b-4b4c-822a-2c729158ca6f",
+				"method": "GET"
+			},
+			{
+				"id": "d233eba1-ae2d-4df7-8782-55854436caf9",
+				"method": "DELETE"
+			},
+			{
+				"id": "bb5ac393-5041-43aa-908a-52c0221ed81b",
+				"method": "GET"
+			}
+		]
+	}
+}
