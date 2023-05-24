@@ -1,0 +1,667 @@
+{
+	"id": "db101f53-a673-4fc7-9f05-c7dd2aedef48",
+	"name": "BlackBox Testing",
+	"timestamp": "2023-05-24T23:29:31.316Z",
+	"collection_id": "27245561-d2dbc62b-38a7-499b-9071-2ec288e3010f",
+	"folder_id": 0,
+	"environment_id": "27245561-d3200fb9-d4a6-49fe-bdeb-7b0d454babc9",
+	"totalPass": 45,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2023-05-24T23:29:29.899Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "0d3bd195-6963-4c18-8547-6879219f8631",
+			"name": "Register Admin",
+			"url": "http://127.0.0.1:5000/register",
+			"time": 37,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				37
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "e660ce47-7a5c-4c9e-bc36-620947008d23",
+			"name": "Login",
+			"url": "http://127.0.0.1:5000/login",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "3fdbb45c-ff35-48ac-83c8-8c87d2e5e44e",
+			"name": "Create Product T01",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 23,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				23
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "d65eefac-212c-4178-8f78-43c4b5d3b136",
+			"name": "Create Product T02",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 20,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				20
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "69e1ee6a-03f2-4a57-9ec4-383e0f410ef4",
+			"name": "Create Product T03",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "7a97407b-907a-46bf-af61-df0154747733",
+			"name": "Create Product T04",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 200": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 200": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "5c7baec4-7e25-4e85-af37-659fcc3d9cd2",
+			"name": "Create Product T05",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 9,
+			"responseCode": {
+				"code": 403,
+				"name": "FORBIDDEN"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 403": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 403": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "b6e043a8-1aa0-4603-9ecf-7983ef79a835",
+			"name": "Create Product T06",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 19,
+			"responseCode": {
+				"code": 403,
+				"name": "FORBIDDEN"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 403": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				19
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 403": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "ac2c3218-57fe-4f7e-a734-a174514f705c",
+			"name": "Create Product T07",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 12,
+			"responseCode": {
+				"code": 403,
+				"name": "FORBIDDEN"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 403": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 403": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "86a2ed65-90c6-4638-8939-f37adbe96470",
+			"name": "Create Product T08",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 18,
+			"responseCode": {
+				"code": 403,
+				"name": "FORBIDDEN"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 403": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				18
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 403": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "165bc3a4-00ba-49e9-82ef-d93110afbb26",
+			"name": "Create Product T09",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 13,
+			"responseCode": {
+				"code": 403,
+				"name": "FORBIDDEN"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 403": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 403": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "d31a18d1-9ad6-4128-9228-bbc9d2b19189",
+			"name": "Create Product T10",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 17,
+			"responseCode": {
+				"code": 403,
+				"name": "FORBIDDEN"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 403": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 403": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "23639baa-548a-416e-afd1-3ae2bc7d1633",
+			"name": "Create Product T11",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 23,
+			"responseCode": {
+				"code": 403,
+				"name": "FORBIDDEN"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 403": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				23
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 403": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "ac1a4493-80fb-47c8-b6b2-e8fc1eb8cc14",
+			"name": "Create Product T12",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 22,
+			"responseCode": {
+				"code": 403,
+				"name": "FORBIDDEN"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 403": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				22
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 403": true,
+					"Body matches string": true
+				}
+			]
+		},
+		{
+			"id": "79a253e0-21b6-4efa-8b3a-78b5162ac335",
+			"name": "Create Product T13",
+			"url": "http://127.0.0.1:5000/product/create",
+			"time": 13,
+			"responseCode": {
+				"code": 403,
+				"name": "FORBIDDEN"
+			},
+			"tests": {
+				"Response time is less than 500ms": true,
+				"Status code is 403": true,
+				"Body matches string": true
+			},
+			"testPassFailCounts": {
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status code is 403": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Body matches string": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"Response time is less than 500ms": true,
+					"Status code is 403": true,
+					"Body matches string": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 266,
+	"collection": {
+		"requests": [
+			{
+				"id": "0d3bd195-6963-4c18-8547-6879219f8631",
+				"method": "POST"
+			},
+			{
+				"id": "e660ce47-7a5c-4c9e-bc36-620947008d23",
+				"method": "GET"
+			},
+			{
+				"id": "3fdbb45c-ff35-48ac-83c8-8c87d2e5e44e",
+				"method": "POST"
+			},
+			{
+				"id": "d65eefac-212c-4178-8f78-43c4b5d3b136",
+				"method": "POST"
+			},
+			{
+				"id": "69e1ee6a-03f2-4a57-9ec4-383e0f410ef4",
+				"method": "POST"
+			},
+			{
+				"id": "7a97407b-907a-46bf-af61-df0154747733",
+				"method": "POST"
+			},
+			{
+				"id": "5c7baec4-7e25-4e85-af37-659fcc3d9cd2",
+				"method": "POST"
+			},
+			{
+				"id": "b6e043a8-1aa0-4603-9ecf-7983ef79a835",
+				"method": "POST"
+			},
+			{
+				"id": "ac2c3218-57fe-4f7e-a734-a174514f705c",
+				"method": "POST"
+			},
+			{
+				"id": "86a2ed65-90c6-4638-8939-f37adbe96470",
+				"method": "POST"
+			},
+			{
+				"id": "165bc3a4-00ba-49e9-82ef-d93110afbb26",
+				"method": "POST"
+			},
+			{
+				"id": "d31a18d1-9ad6-4128-9228-bbc9d2b19189",
+				"method": "POST"
+			},
+			{
+				"id": "23639baa-548a-416e-afd1-3ae2bc7d1633",
+				"method": "POST"
+			},
+			{
+				"id": "ac1a4493-80fb-47c8-b6b2-e8fc1eb8cc14",
+				"method": "POST"
+			},
+			{
+				"id": "79a253e0-21b6-4efa-8b3a-78b5162ac335",
+				"method": "POST"
+			}
+		]
+	}
+}
